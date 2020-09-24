@@ -27,8 +27,16 @@ import jsonPlaceholder from '../apis/jsonPlaceholder';
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
 
-  const userIds = _.uniq(_.map(getState().posts, 'userId'));
-  userIds.forEach((id) => dispatch(fetchUser(id)));
+  // Find Unique Users
+  // const userIds = _.uniq(_.map(getState().posts, 'userId'));
+  // userIds.forEach((id) => dispatch(fetchUser(id)));
+
+  // find unique users (chain refractor), each chain is first arugment into next chain
+  _.chain(getState().posts)
+    .map('userId')
+    .uniq()
+    .forEach((id) => dispatch(fetchUser(id)))
+    .value();
 };
 
 // Fetch All Posts
